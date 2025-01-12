@@ -9,11 +9,10 @@ class DomainService
 {
     private $pleskClient;
 
-    public function __construct()
+    // Dependency injection for the configured Plesk client
+    public function __construct(Client $pleskClient)
     {
-        $config = config('plesk'); // Konfiguration aus Laravel .env
-        $this->pleskClient = new Client($config['host']);
-        $this->pleskClient->setSecretKey($config['secret_key']);
+        $this->pleskClient = $pleskClient;
     }
 
     public function createDomain(array $data)
@@ -22,7 +21,7 @@ class DomainService
             // IP-Adresse holen
             $ipAddresses = $this->pleskClient->ip()->get();
             if (empty($ipAddresses)) {
-                throw new \Exception('Keine IP-Adresse verfügbar.');
+                throw new \Exception('No IP address is available.');
             }
             $serverIp = $ipAddresses[0]->ipAddress;
 
@@ -41,10 +40,14 @@ class DomainService
                 true
             );
 
-            return response()->json(['message' => 'Domain erfolgreich erstellt', 'data' => $response]);
+            return response()->json(['message' => 'Domain successfully created', 'data' => $response]);
         } catch (\Exception $e) {
-            Log::error('Domain-Erstellung fehlgeschlagen: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Domain creation failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Domain creation failed',
+                'plesk_error_id' => $e->getCode(),
+                'plesk_error_message' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -54,8 +57,12 @@ class DomainService
             $domains = $this->pleskClient->webspace()->getAll();
             return response()->json(['data' => $domains]);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Abrufen der Domains: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            Log::error('Error fetching domains: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Domain list failed',
+                'plesk_error_id' => $e->getCode(),
+                'plesk_error_message' => $e->getMessage(),
+            ], 500);
         }
     }
 }
