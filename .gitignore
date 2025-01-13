@@ -24,3 +24,6 @@ docker-compose.yml
 /.vscode
 /.zed
 
+frontend_summary.txt
+generate_summary.py
+summary.txt
