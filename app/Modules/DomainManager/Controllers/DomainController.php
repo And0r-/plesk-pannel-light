@@ -128,4 +128,76 @@ class DomainController
     {
         return $this->domainService->getDomains();
     }
+
+    /**
+     * @OA\Post(
+     *   path="/domains/{domain_id}/status",
+     *   summary="Update the status of a domain",
+     *   tags={"Domains - v1"},
+     *   description="This endpoint updates the status of a domain (active or disabled) in the Plesk system. The status is set using the Plesk API.",
+     *   @OA\Parameter(
+     *       name="domain_id",
+     *       in="path",
+     *       required=true,
+     *       description="The ID of the domain to be updated.",
+     *       @OA\Schema(type="integer", example=33)
+     *   ),
+     *   @OA\RequestBody(
+     *       required=true,
+     *       @OA\JsonContent(
+     *           required={"status"},
+     *           @OA\Property(property="status", type="string", enum={"active", "disabled"}, example="disabled")
+     *       )
+     *   ),
+     *   @OA\Response(
+     *       response=200,
+     *       description="Status successfully updated",
+     *       @OA\JsonContent(
+     *           @OA\Property(property="message", type="string", example="Status successfully updated"),
+     *           @OA\Property(property="data", type="boolean", example=true)
+     *       )
+     *   ),
+     *   @OA\Response(
+     *       response=422,
+     *       description="Validation error",
+     *       @OA\JsonContent(
+     *           @OA\Property(property="message", type="string", example="The status must be either active or disabled."),
+     *           @OA\Property(property="errors", type="object",
+     *               @OA\Property(property="status", type="array",
+     *                   @OA\Items(type="string", example="The status must be either active or disabled.")
+     *               )
+     *           )
+     *       )
+     *   ),
+     *   @OA\Response(
+     *       response=500,
+     *       description="Internal server error",
+     *       @OA\JsonContent(
+     *           @OA\Property(property="error", type="string", example="Failed to update domain status"),
+     *           @OA\Property(property="plesk_error_id", type="integer", example=1013),
+     *           @OA\Property(property="plesk_error_message", type="string", example="Webspace does not exist")
+     *       )
+     *   )
+     * )
+     */
+    public function updateStatus(Request $request, $domain_id)
+    {
+        $protectedDomains = explode(',', env('PROTECTED_DOMAIN_IDS', ''));
+
+        // Validierung der Eingaben
+        $data = $request->validate([
+            'status' => 'required|string|in:active,disabled',
+        ], [
+            'status.in' => 'The status must be either active or disabled.',
+        ]);
+
+        // Prüfen, ob die Domain geschützt ist
+        if (in_array($domain_id, $protectedDomains)) {
+            return response()->json([
+                'error' => 'The selected domain cannot be disabled as it is critical for system operation.',
+            ], 403);
+        }
+
+        return $this->domainService->updateStatus($domain_id, $data['status']);
+    }
 }

@@ -65,4 +65,29 @@ class DomainService
             ], 500);
         }
     }
+
+    public function updateStatus($domainId, string $status)
+    {
+        try {
+            $response = null;
+
+            if ($status === 'active') {
+                $response = $this->pleskClient->webspace()->enable('id', $domainId);
+            } elseif ($status === 'disabled') {
+                $response = $this->pleskClient->webspace()->disable('id', $domainId);
+            }
+
+            return response()->json([
+                'message' => 'Status successfully updated',
+                'data' => $response,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating domain status: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Failed to update domain status',
+                'plesk_error_id' => $e->getCode(),
+                'plesk_error_message' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

@@ -213,6 +213,125 @@
                     }
                 }
             }
+        },
+        "/domains/{domain_id}/status": {
+            "post": {
+                "tags": [
+                    "Domains - v1"
+                ],
+                "summary": "Update the status of a domain",
+                "description": "This endpoint updates the status of a domain (active or disabled) in the Plesk system. The status is set using the Plesk API.",
+                "operationId": "045a23e9e13c6c2c61c1b487b941c438",
+                "parameters": [
+                    {
+                        "name": "domain_id",
+                        "in": "path",
+                        "description": "The ID of the domain to be updated.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 33
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "disabled"
+                                        ],
+                                        "example": "disabled"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status successfully updated"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The selected status is invalid."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The selected status is invalid."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to update domain status"
+                                        },
+                                        "plesk_error_id": {
+                                            "type": "integer",
+                                            "example": 1013
+                                        },
+                                        "plesk_error_message": {
+                                            "type": "string",
+                                            "example": "Webspace does not exist"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "tags": [

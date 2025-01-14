@@ -6,4 +6,5 @@ use App\Modules\DomainManager\Controllers\DomainController;
 Route::prefix('domains')->group(function () {
     Route::post('/', [DomainController::class, 'store']); // Create domain
     Route::get('/', [DomainController::class, 'index']); // List domains
+    Route::post('/{domainId}/status', [DomainController::class, 'updateStatus']);
 });
