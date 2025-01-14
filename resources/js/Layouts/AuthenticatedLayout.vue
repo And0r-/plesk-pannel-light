@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -212,6 +211,15 @@ const showingNavigationDropdown = ref(false);
                             <strong>Plesk Error Message:</strong> {{ $page.props.errorMessage.plesk_error_message }}
                         </p>
                     </div>
+
+
+  <div v-if="$page.props.auth.user">
+    <p>Welcome, {{ $page.props.auth.user.name }}</p>
+  </div>
+  <div v-else>
+    <p>Please log in to access this page.</p>
+  </div>
+
 
                     <!-- Dynamic Slot Content -->
                     <slot></slot>
