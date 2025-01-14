@@ -22,12 +22,12 @@
   <script>
   import DomainForm from './DomainForm.vue';
   import DomainList from './DomainList.vue';
-  import AppLayout from '@/Layouts/App.vue';
+  import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
   import axios from 'axios';
   
   export default {
     components: { DomainForm, DomainList },
-    layout: AppLayout,
+    layout: AuthenticatedLayout,
     data() {
       return {
         domains: [],
