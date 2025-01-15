@@ -43,7 +43,9 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center rounded-md bg-blue-700 px-3 py-2 text-sm font-medium leading-4 text-white hover:bg-blue-800 focus:outline-none"
                                             >
-                                                {{ $page.props.auth.user.name }}
+                                                <div v-if="$page.props.auth && $page.props.auth.user">
+                                                    {{ $page.props.auth.user.name }}
+                                                </div>
 
                                                 <svg
                                                     class="-me-0.5 ms-2 h-4 w-4"
@@ -124,7 +126,7 @@ const showingNavigationDropdown = ref(false);
 
                     <!-- Responsive Settings Options -->
                     <div class="border-t border-gray-200 pb-1 pt-4">
-                        <div class="px-4">
+                        <div v-if="$page.props.auth && $page.props.auth.user">
                             <div class="text-base font-medium text-gray-800">
                                 {{ $page.props.auth.user.name }}
                             </div>
@@ -211,14 +213,6 @@ const showingNavigationDropdown = ref(false);
                             <strong>Plesk Error Message:</strong> {{ $page.props.errorMessage.plesk_error_message }}
                         </p>
                     </div>
-
-
-  <div v-if="$page.props.auth.user">
-    <p>Welcome, {{ $page.props.auth.user.name }}</p>
-  </div>
-  <div v-else>
-    <p>Please log in to access this page.</p>
-  </div>
 
 
                     <!-- Dynamic Slot Content -->

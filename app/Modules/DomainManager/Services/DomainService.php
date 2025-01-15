@@ -43,6 +43,19 @@ class DomainService
             return response()->json(['message' => 'Domain successfully created', 'data' => $response]);
         } catch (\Exception $e) {
             Log::error('Domain creation failed: ' . $e->getMessage());
+
+            // Fehler-Mapping anwenden
+            $mappedErrors = $this->mapPleskErrorToField($e->getMessage());
+
+            if (!empty($mappedErrors)) {
+                // Rückgabe im Validation-Error-Format
+                return response()->json([
+                    'error' => 'Domain creation failed',
+                    'errors' => $mappedErrors,
+                ], 422);
+            }
+
+            // Rückgabe des Originalfehlers, falls nicht gemappt
             return response()->json([
                 'error' => 'Domain creation failed',
                 'plesk_error_id' => $e->getCode(),
@@ -50,6 +63,30 @@ class DomainService
             ], 500);
         }
     }
+
+    /**
+     * Mappe die Plesk-Fehlernachricht auf spezifische Eingabefelder.
+     */
+    private function mapPleskErrorToField(string $pleskErrorMessage): array
+    {
+        $mappedErrors = [];
+
+        if (stripos($pleskErrorMessage, 'password') !== false) {
+            $mappedErrors['password'] = $pleskErrorMessage;
+        }
+
+        if (stripos($pleskErrorMessage, 'domain name') !== false) {
+            $mappedErrors['domain'] = $pleskErrorMessage;
+        }
+
+        if (stripos($pleskErrorMessage, 'System user update is failed') !== false) {
+            $mappedErrors['ftp_user'] = $pleskErrorMessage;
+        }
+
+        return $mappedErrors;
+    }
+
+
 
     public function getDomains()
     {
