@@ -24,13 +24,6 @@ const showingNavigationDropdown = ref(false);
                                     <a href="/">Plesk Panel Light</a>
                                 </Link>
                             </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                            </div>
                         </div>
 
                         <div class="hidden sm:ms-6 sm:flex sm:items-center">
@@ -200,22 +193,6 @@ const showingNavigationDropdown = ref(false);
 </aside>
                 <!-- Page Content -->
                 <main class="w-full md:w-3/4 bg-white shadow-md rounded-lg p-6">
-                    <!-- Global Messages -->
-                    <div v-if="$page.props.successMessage" class="bg-green-100 text-green-800 p-3 rounded mb-4">
-                        {{ $page.props.successMessage }}
-                    </div>
-                    <div v-if="$page.props.errorMessage" class="bg-red-100 text-red-800 p-3 rounded mb-4">
-                        <p><strong>Error:</strong> {{ $page.props.errorMessage.error }}</p>
-                        <p v-if="$page.props.errorMessage.plesk_error_id">
-                            <strong>Plesk Error ID:</strong> {{ $page.props.errorMessage.plesk_error_id }}
-                        </p>
-                        <p v-if="$page.props.errorMessage.plesk_error_message">
-                            <strong>Plesk Error Message:</strong> {{ $page.props.errorMessage.plesk_error_message }}
-                        </p>
-                    </div>
-
-
-                    <!-- Dynamic Slot Content -->
                     <slot></slot>
                 </main>
             </div>
