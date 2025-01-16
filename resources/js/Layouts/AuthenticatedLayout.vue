@@ -22,7 +22,7 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="flex shrink-0 items-center text-2xl font-bold"
                             >
-                                <Link :href="route('home')">
+                                <Link :href="route('dashboard')">
                                     <a href="/">Plesk Panel Light</a>
                                 </Link>
                             </div>
@@ -137,8 +137,8 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            :href="route('home')"
-                            :active="route().current('home')"
+                            :href="route('dashboard')"
+                            :active="route().current('dashboard')"
                         >
                             Home
                         </ResponsiveNavLink>
@@ -206,8 +206,8 @@ const showingNavigationDropdown = ref(false);
                         <ul class="mt-4 space-y-2">
                             <li>
                                 <NavLink
-                                    :href="route('home')"
-                                    :active="route().current('home')"
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
                                 >
                                     <span class="text-lg font-medium"
                                         >Home</span

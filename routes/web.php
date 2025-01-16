@@ -7,7 +7,7 @@ use L5Swagger\Http\Controllers\SwaggerController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Home');
     });
 
     Route::get('/home', function () {

@@ -1,5 +1,5 @@
 <template>
-    <div class="spinner" v-if="show">
+    <div :class="spinnerClass" v-if="show">
         <div class="spinner-circle"></div>
     </div>
 </template>
@@ -11,22 +11,36 @@ export default {
             type: Boolean,
             default: false,
         },
+        inline: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    computed: {
+        spinnerClass() {
+            return this.inline
+                ? 'inline-spinner flex justify-center items-center'
+                : 'global-spinner flex justify-center items-center';
+        },
     },
 };
 </script>
 
 <style scoped>
-.spinner {
+.global-spinner {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 9999;
+}
+
+.inline-spinner {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .spinner-circle {

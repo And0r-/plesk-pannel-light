@@ -1,6 +1,9 @@
 <template>
     <div>
-        <div class="overflow-x-auto">
+        <div v-if="loading" class="flex justify-center items-center h-32">
+            <Spinner :show="loading" :inline="true" />
+        </div>
+        <div v-else class="overflow-x-auto">
             <table
                 class="table-auto w-full border-collapse border border-gray-300"
             >
@@ -26,13 +29,22 @@
                         <td class="border border-gray-300 px-4 py-2">
                             <span
                                 :class="{
-                                    'text-green-500': domain.enabled,
-                                    'text-red-500': !domain.enabled,
+                                    'text-green-500':
+                                        domain.enabled && !domain.loading,
+                                    'text-red-500':
+                                        !domain.enabled && !domain.loading,
                                 }"
-                                class="cursor-pointer underline"
+                                class="cursor-pointer underline flex items-center space-x-2"
                                 @click="toggleStatus(domain)"
                             >
-                                {{ domain.enabled ? 'active' : 'disabled' }}
+                                <span v-if="!domain.loading">
+                                    {{ domain.enabled ? 'active' : 'disabled' }}
+                                </span>
+                                <Spinner
+                                    v-else
+                                    :show="domain.loading"
+                                    :inline="true"
+                                />
                             </span>
                         </td>
                     </tr>
@@ -43,6 +55,7 @@
 </template>
 
 <script>
+import Spinner from '@/Components/Spinner.vue';
 import axios from 'axios';
 
 export default {
@@ -51,25 +64,22 @@ export default {
             type: Array,
             default: () => [],
         },
+        loading: {
+            type: Boolean,
+            default: false,
+        },
     },
-    data() {
-        return {
-            successMessage: '',
-            errorMessage: '',
-        };
-    },
+    components: { Spinner },
     methods: {
         async toggleStatus(domain) {
-            this.successMessage = '';
-            this.errorMessage = '';
+            // Füge die "loading"-Eigenschaft direkt hinzu
+            domain.loading = true;
 
             const newStatus = domain.enabled ? 'disabled' : 'active';
             try {
                 const response = await axios.post(
                     `/api/v1/domains/${domain.id}/status`,
-                    {
-                        status: newStatus,
-                    }
+                    { status: newStatus }
                 );
 
                 if (response.status === 200) {
@@ -84,6 +94,9 @@ export default {
                     this.errorMessage =
                         'An unexpected error occurred. Please try again.';
                 }
+            } finally {
+                // Ladezustand zurücksetzen
+                domain.loading = false;
             }
         },
     },
