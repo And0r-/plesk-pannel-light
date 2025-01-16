@@ -22,7 +22,7 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="flex shrink-0 items-center text-2xl font-bold"
                             >
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('home')">
                                     <a href="/">Plesk Panel Light</a>
                                 </Link>
                             </div>
@@ -137,10 +137,10 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            :href="route('home')"
+                            :active="route().current('home')"
                         >
-                            Dashboard
+                            Home
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             :href="route('domains')"
@@ -204,14 +204,13 @@ const showingNavigationDropdown = ref(false);
 
                         <!-- Navigationseinträge -->
                         <ul class="mt-4 space-y-2">
-                            <!-- Dashboard -->
                             <li>
                                 <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :href="route('home')"
+                                    :active="route().current('home')"
                                 >
                                     <span class="text-lg font-medium"
-                                        >Dashboard</span
+                                        >Home</span
                                     >
                                 </NavLink>
                             </li>

@@ -1,32 +1,24 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use L5Swagger\Http\Controllers\SwaggerController;
-
-// Route::get('/', function () {
-//     return Inertia::render('Welcome', [
-//         'canLogin' => Route::has('login'),
-//         'canRegister' => Route::has('register'),
-//         'laravelVersion' => Application::VERSION,
-//         'phpVersion' => PHP_VERSION,
-//     ]);
-// });
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
         return Inertia::render('Dashboard');
     });
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/home', function () {
+        return Inertia::render('Home');
+    })->name('home');
 
     Route::get('/domains', function () {
         return Inertia::render('DomainManager/Index');
     })->name('domains');
+
+    Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('swagger.api');
 });
 
 Route::middleware('auth')->group(function () {
