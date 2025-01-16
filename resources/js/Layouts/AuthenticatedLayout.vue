@@ -174,7 +174,15 @@ const showingNavigationDropdown = ref(false);
           <span class="text-lg font-medium">Domains</span>
         </NavLink>
       </li>
+    </ul>
 
+    <div class="mt-12">
+      <span class="text-gray-400 uppercase text-sm font-bold tracking-wide">
+        Developer Tools
+      </span>
+    </div>
+
+    <ul class="mt-4 space-y-2">
       <!-- Swagger -->
       <li>
         <NavLink href="/api/documentation">
