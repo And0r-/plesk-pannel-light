@@ -19,7 +19,9 @@ const showingNavigationDropdown = ref(false);
                     <div class="flex h-16 justify-between">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="flex shrink-0 items-center text-2xl font-bold">
+                            <div
+                                class="flex shrink-0 items-center text-2xl font-bold"
+                            >
                                 <Link :href="route('dashboard')">
                                     <a href="/">Plesk Panel Light</a>
                                 </Link>
@@ -36,8 +38,16 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center rounded-md bg-blue-700 px-3 py-2 text-sm font-medium leading-4 text-white hover:bg-blue-800 focus:outline-none"
                                             >
-                                                <div v-if="$page.props.auth && $page.props.auth.user">
-                                                    {{ $page.props.auth.user.name }}
+                                                <div
+                                                    v-if="
+                                                        $page.props.auth &&
+                                                        $page.props.auth.user
+                                                    "
+                                                >
+                                                    {{
+                                                        $page.props.auth.user
+                                                            .name
+                                                    }}
                                                 </div>
 
                                                 <svg
@@ -57,10 +67,16 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')">
+                                        <DropdownLink
+                                            :href="route('profile.edit')"
+                                        >
                                             Profile
                                         </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
+                                        <DropdownLink
+                                            :href="route('logout')"
+                                            method="post"
+                                            as="button"
+                                        >
                                             Log Out
                                         </DropdownLink>
                                     </template>
@@ -71,7 +87,10 @@ const showingNavigationDropdown = ref(false);
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
+                                @click="
+                                    showingNavigationDropdown =
+                                        !showingNavigationDropdown
+                                "
                                 class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
                             >
                                 <svg
@@ -83,7 +102,8 @@ const showingNavigationDropdown = ref(false);
                                     <path
                                         :class="{
                                             hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
+                                            'inline-flex':
+                                                !showingNavigationDropdown,
                                         }"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -93,7 +113,8 @@ const showingNavigationDropdown = ref(false);
                                     <path
                                         :class="{
                                             hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
+                                            'inline-flex':
+                                                showingNavigationDropdown,
                                         }"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -107,12 +128,24 @@ const showingNavigationDropdown = ref(false);
                 </div>
 
                 <!-- Responsive Navigation Menu -->
-                <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
+                <div
+                    :class="{
+                        block: showingNavigationDropdown,
+                        hidden: !showingNavigationDropdown,
+                    }"
+                    class="sm:hidden"
+                >
                     <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                        <ResponsiveNavLink
+                            :href="route('dashboard')"
+                            :active="route().current('dashboard')"
+                        >
                             Dashboard
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('domains')" :active="route().current('domains')">
+                        <ResponsiveNavLink
+                            :href="route('domains')"
+                            :active="route().current('domains')"
+                        >
                             Domains
                         </ResponsiveNavLink>
                     </div>
@@ -132,7 +165,11 @@ const showingNavigationDropdown = ref(false);
                             <ResponsiveNavLink :href="route('profile.edit')">
                                 Profile
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
+                            <ResponsiveNavLink
+                                :href="route('logout')"
+                                method="post"
+                                as="button"
+                            >
                                 Log Out
                             </ResponsiveNavLink>
                         </div>
@@ -148,57 +185,81 @@ const showingNavigationDropdown = ref(false);
             </header>
 
             <!-- Main Content -->
-            <div class="flex-grow container mx-auto flex mt-6 flex-col md:flex-row">
+            <div
+                class="flex-grow container mx-auto flex mt-6 flex-col md:flex-row"
+            >
                 <!-- Navigation -->
-                <aside class="w-full md:w-1/4 bg-gray-800 text-white shadow-md rounded-lg p-4">
-  <nav>
-    <!-- Titel der Navigation -->
-    <div>
-      <span class="text-gray-400 uppercase text-sm font-bold tracking-wide">
-        Administrativ
-      </span>
-    </div>
+                <aside
+                    class="w-full md:w-1/4 bg-gray-800 text-white shadow-md rounded-lg p-4"
+                >
+                    <nav>
+                        <!-- Titel der Navigation -->
+                        <div>
+                            <span
+                                class="text-gray-400 uppercase text-sm font-bold tracking-wide"
+                            >
+                                Administrativ
+                            </span>
+                        </div>
 
-    <!-- Navigationseinträge -->
-    <ul class="mt-4 space-y-2">
-      <!-- Dashboard -->
-      <li>
-        <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-          <span class="text-lg font-medium">Dashboard</span>
-        </NavLink>
-      </li>
+                        <!-- Navigationseinträge -->
+                        <ul class="mt-4 space-y-2">
+                            <!-- Dashboard -->
+                            <li>
+                                <NavLink
+                                    :href="route('dashboard')"
+                                    :active="route().current('dashboard')"
+                                >
+                                    <span class="text-lg font-medium"
+                                        >Dashboard</span
+                                    >
+                                </NavLink>
+                            </li>
 
-      <!-- Domains -->
-      <li>
-        <NavLink :href="route('domains')" :active="route().current('domains')">
-          <span class="text-lg font-medium">Domains</span>
-        </NavLink>
-      </li>
-    </ul>
+                            <!-- Domains -->
+                            <li>
+                                <NavLink
+                                    :href="route('domains')"
+                                    :active="route().current('domains')"
+                                >
+                                    <span class="text-lg font-medium"
+                                        >Domains</span
+                                    >
+                                </NavLink>
+                            </li>
+                        </ul>
 
-    <div class="mt-12">
-      <span class="text-gray-400 uppercase text-sm font-bold tracking-wide">
-        Developer Tools
-      </span>
-    </div>
+                        <div class="mt-12">
+                            <span
+                                class="text-gray-400 uppercase text-sm font-bold tracking-wide"
+                            >
+                                Developer Tools
+                            </span>
+                        </div>
 
-    <ul class="mt-4 space-y-2">
-      <!-- Swagger -->
-      <li>
-        <NavLink href="/api/documentation">
-          <span class="text-lg font-medium">Swagger</span>
-        </NavLink>
-      </li>
+                        <ul class="mt-4 space-y-2">
+                            <!-- Swagger -->
+                            <li>
+                                <NavLink href="/api/documentation">
+                                    <span class="text-lg font-medium"
+                                        >Swagger</span
+                                    >
+                                </NavLink>
+                            </li>
 
-      <!-- Externe Links -->
-      <li>
-        <ExternalLink href="https://s2404.rootserver.io:8443">
-          <span class="text-lg font-medium">Plesk</span>
-        </ExternalLink>
-      </li>
-    </ul>
-  </nav>
-</aside>
+                            <!-- Externe Links -->
+                            <li>
+                                <ExternalLink
+                                    href="https://s2404.rootserver.io:8443"
+                                >
+                                    <span class="text-lg font-medium"
+                                        >Plesk</span
+                                    >
+                                </ExternalLink>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
                 <!-- Page Content -->
                 <main class="w-full md:w-3/4 bg-white shadow-md rounded-lg p-6">
                     <slot></slot>

@@ -16,34 +16,33 @@
         </div>
     </div>
 </template>
-  
-  <script>
-  import DomainForm from './DomainForm.vue';
-  import DomainList from './DomainList.vue';
-  import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-  import axios from 'axios';
-  
-  export default {
+
+<script>
+import DomainForm from './DomainForm.vue';
+import DomainList from './DomainList.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import axios from 'axios';
+
+export default {
     components: { DomainForm, DomainList },
     layout: AuthenticatedLayout,
     data() {
-      return {
-        domains: [],
-      };
+        return {
+            domains: [],
+        };
     },
     methods: {
-      async fetchDomains() {
-        try {
-          const response = await axios.get('/api/v1/domains');
-          this.domains = response.data.data;
-        } catch (error) {
-            console.error('Failed to fetch domains:', error);
-        }
-      },
+        async fetchDomains() {
+            try {
+                const response = await axios.get('/api/v1/domains');
+                this.domains = response.data.data;
+            } catch (error) {
+                console.error('Failed to fetch domains:', error);
+            }
+        },
     },
     mounted() {
-      this.fetchDomains();
+        this.fetchDomains();
     },
-  };
-  </script>
-  
+};
+</script>
