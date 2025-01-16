@@ -10,6 +10,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bjeavons/zxcvbn-php": "^1.4",
         "darkaonline/l5-swagger": "^8.6",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^11.31",

@@ -40,7 +40,7 @@ class DomainService
                 true
             );
 
-            return response()->json(['message' => 'Domain successfully created', 'data' => $response]);
+            return response()->json(['message' => 'Domain successfully created', 'data' => $response], 201);
         } catch (\Exception $e) {
             Log::error('Domain creation failed: ' . $e->getMessage());
 

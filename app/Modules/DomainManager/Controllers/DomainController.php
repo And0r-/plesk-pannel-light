@@ -4,6 +4,9 @@ namespace App\Modules\DomainManager\Controllers;
 
 use App\Modules\DomainManager\Services\DomainService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use ZxcvbnPhp\Zxcvbn;
+
 
 /**
  * @OA\Tag(
@@ -40,10 +43,12 @@ class DomainController
      *   @OA\RequestBody(
      *       required=true,
      *       @OA\JsonContent(
-     *           required={"domain", "ftp_user", "password"},
-     *           @OA\Property(property="domain", type="string", example="example.com"),
-     *           @OA\Property(property="ftp_user", type="string", example="ftpuser"),
-     *           @OA\Property(property="password", type="string", example="strongpassword123!")
+     *           @OA\JsonContent(
+     *               required={"domain", "ftp_user", "password"},
+     *               @OA\Property(property="domain", type="string", example="example.com", description="The domain name to be created. Must be a valid domain format."),
+     *               @OA\Property(property="ftp_user", type="string", example="ftpuser", description="FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed."),
+     *               @OA\Property(property="password", type="string", example="strongpassword123!", description="Password for the FTP and system user. Must be at least 8 characters long and pass complexity requirements (e.g., not commonly used passwords).")
+     *           )
      *       )
      *   ),
      *   @OA\Response(
@@ -82,12 +87,30 @@ class DomainController
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'domain' => 'required|string',
-            'ftp_user' => 'required|string',
-            'password' => 'required|string|min:8',
+        $validator = Validator::make($request->all(), [
+            'domain' => ['required', 'string', 'regex:/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,}$/i'],
+            'ftp_user' => ['required', 'string', 'regex:/^[a-z0-9._-]+$/'],
+            'password' => ['required', 'string', 'min:8'],
         ]);
 
+        // Custom password validation using zxcvbn
+        if ($validator->passes()) {
+            $zxcvbn = new Zxcvbn();
+            $passwordStrength = $zxcvbn->passwordStrength($request->password);
+
+            if ($passwordStrength['score'] < 3) {
+                return response()->json([
+                    'message' => 'The password is too weak.',
+                    'errors' => [
+                        'password' => ['Password complexity is insufficient. Please choose a stronger password.']
+                    ]
+                ], 422);
+            }
+        }
+
+        $validator->validate();
+
+        $data = $validator->validated();
         return $this->domainService->createDomain($data);
     }
 

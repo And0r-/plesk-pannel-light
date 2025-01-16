@@ -12,7 +12,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/home', function () {
         return Inertia::render('Home');
-    })->name('home');
+    })->name('dashboard');
 
     Route::get('/domains', function () {
         return Inertia::render('DomainManager/Index');
