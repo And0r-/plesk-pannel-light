@@ -2,25 +2,25 @@
     <div>
         <!-- Erfolgsmeldung -->
         <div
-            v-if="globalSuccessMessage"
+            v-if="successMessage"
             class="bg-green-100 text-green-800 p-3 rounded mb-4"
         >
-            {{ globalSuccessMessage }}
+            {{ successMessage }}
         </div>
 
         <!-- Fehlermeldung -->
         <div
-            v-if="globalErrorMessage"
+            v-if="errorMessage"
             class="bg-red-100 text-red-800 p-3 rounded mb-4"
         >
-            <p><strong>Error:</strong> {{ globalErrorMessage.error }}</p>
-            <p v-if="globalErrorMessage.plesk_error_id">
+            <p><strong>Error:</strong> {{ errorMessage.error }}</p>
+            <p v-if="errorMessage.plesk_error_id">
                 <strong>Plesk Error ID:</strong>
-                {{ globalErrorMessage.plesk_error_id }}
+                {{ errorMessage.plesk_error_id }}
             </p>
-            <p v-if="globalErrorMessage.plesk_error_message">
+            <p v-if="errorMessage.plesk_error_message">
                 <strong>Plesk Error Message:</strong>
-                {{ globalErrorMessage.plesk_error_message }}
+                {{ errorMessage.plesk_error_message }}
             </p>
         </div>
 
@@ -138,9 +138,9 @@ export default {
             ftpUserModified: false,
             errors: {},
             showPassword: false,
-            isLoading: false, // Spinner-Zustand
-            globalErrorMessage: null,
-            globalSuccessMessage: null,
+            isLoading: false,
+            errorMessage: null,
+            successMessage: null,
         };
     },
     created() {
@@ -167,7 +167,7 @@ export default {
                 length: 16,
                 characters: [lower, upper, digits],
             });
-            this.form.password = securePassword;
+            // this.form.password = securePassword; // Kann das weg oder ist das kunst?
             return securePassword;
         },
         updateFtpUser() {
@@ -179,12 +179,12 @@ export default {
         },
         async handleSubmit() {
             this.errors = {};
-            this.globalErrorMessage = null;
-            this.globalSuccessMessage = null;
+            this.errorMessage = null;
+            this.successMessage = null;
             this.isLoading = true; // Spinner starten
             try {
                 const response = await axios.post('/api/v1/domains', this.form);
-                this.globalSuccessMessage = response.data.message;
+                this.successMessage = response.data.message;
                 this.$emit('domainCreated');
 
                 this.resetForm();
@@ -195,7 +195,7 @@ export default {
                 ) {
                     this.errors = error.response.data.errors;
                 } else {
-                    this.globalErrorMessage = error.response?.data;
+                    this.errorMessage = error.response?.data;
                 }
             } finally {
                 this.isLoading = false; // Spinner stoppen

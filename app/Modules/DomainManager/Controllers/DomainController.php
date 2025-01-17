@@ -6,6 +6,7 @@ use App\Modules\DomainManager\Services\DomainService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use ZxcvbnPhp\Zxcvbn;
+use App\Helpers\ResponseHelper;
 
 
 /**
@@ -27,12 +28,14 @@ use ZxcvbnPhp\Zxcvbn;
  */
 class DomainController
 {
-    private $domainService;
+    private $domainService, $responseHelper;
 
-    public function __construct(DomainService $domainService)
+    public function __construct(DomainService $domainService, ResponseHelper $responseHelper)
     {
         $this->domainService = $domainService;
+        $this->responseHelper = $responseHelper;
     }
+
 
     /**
      * @OA\Post(
@@ -93,18 +96,18 @@ class DomainController
             'password' => ['required', 'string', 'min:8'],
         ]);
 
-        // Custom password validation using zxcvbn
+        // Custom password validation using zxcvbn for complexity checking
         if ($validator->passes()) {
             $zxcvbn = new Zxcvbn();
             $passwordStrength = $zxcvbn->passwordStrength($request->password);
 
             if ($passwordStrength['score'] < 3) {
-                return response()->json([
-                    'message' => 'The password is too weak.',
-                    'errors' => [
+                $this->responseHelper->validationError(
+                    [
                         'password' => ['Password complexity is insufficient. Please choose a stronger password.']
-                    ]
-                ], 422);
+                    ],
+                    'The password is too weak.'
+                );
             }
         }
 
@@ -207,14 +210,13 @@ class DomainController
     {
         $protectedDomains = explode(',', env('PROTECTED_DOMAIN_IDS', ''));
 
-        // Validierung der Eingaben
         $data = $request->validate([
             'status' => 'required|string|in:active,disabled',
         ], [
             'status.in' => 'The status must be either active or disabled.',
         ]);
 
-        // Prüfen, ob die Domain geschützt ist
+        // Protected domains specified in .env cannot be disabled
         if (in_array($domain_id, $protectedDomains)) {
             return response()->json([
                 'error' => 'The selected domain cannot be disabled as it is critical for system operation.',

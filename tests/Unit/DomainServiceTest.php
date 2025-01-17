@@ -25,7 +25,7 @@ class DomainServiceTest extends TestCase
             '))
         );
 
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         $data = [
             'domain' => 'example.com',
@@ -46,7 +46,7 @@ class DomainServiceTest extends TestCase
         $pleskClientMock = Mockery::mock(Client::class);
         $pleskClientMock->shouldReceive('ip->get')->once()->andReturn([]);
 
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         $data = [
             'domain' => 'example.com',
@@ -73,7 +73,7 @@ class DomainServiceTest extends TestCase
         $pleskClientMock->shouldReceive('webspace->create')
             ->andThrow(new \Exception('Invalid password format'));
 
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         $data = [
             'domain' => 'example.com',
@@ -109,7 +109,7 @@ class DomainServiceTest extends TestCase
         ]);
 
         // DomainService mit Mocked Client
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         // Methode ausführen
         $response = $service->getDomains();
@@ -131,7 +131,7 @@ class DomainServiceTest extends TestCase
             ->andThrow(new \Exception('Connection to Plesk failed', 1001));
 
         // DomainService mit Mocked Client
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         // Methode ausführen
         $response = $service->getDomains();
@@ -155,7 +155,7 @@ class DomainServiceTest extends TestCase
             ->andReturn(true); // Rückgabewert anpassen
 
         // DomainService mit Mocked Client
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         // Methode ausführen
         $response = $service->updateStatus(1, 'active');
@@ -178,7 +178,7 @@ class DomainServiceTest extends TestCase
             ->andReturn(true); // Rückgabewert anpassen
 
         // DomainService mit Mocked Client
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         // Methode ausführen
         $response = $service->updateStatus(1, 'disabled');
@@ -200,7 +200,7 @@ class DomainServiceTest extends TestCase
             ->andThrow(new \Exception('Invalid domain ID', 404));
 
         // DomainService mit Mocked Client
-        $service = new DomainService($pleskClientMock);
+        $service = new DomainService($pleskClientMock, new \App\Helpers\ResponseHelper());
 
         // Methode ausführen
         $response = $service->updateStatus(1, 'active');

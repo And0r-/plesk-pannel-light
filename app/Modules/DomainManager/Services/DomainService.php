@@ -3,29 +3,27 @@
 namespace App\Modules\DomainManager\Services;
 
 use CustomPlesk\Client;
-use Illuminate\Support\Facades\Log;
+use App\Helpers\ResponseHelper;
 
 class DomainService
 {
-    private $pleskClient;
+    private $pleskClient, $responseHelper;
 
-    // Dependency injection for the configured Plesk client
-    public function __construct(Client $pleskClient)
+    // Dependency injection for:
+    //  - The configured Plesk client
+    //  - ResponseHelper to return consistent responses and log them in debug mode
+    public function __construct(Client $pleskClient, ResponseHelper $responseHelper)
     {
         $this->pleskClient = $pleskClient;
+        $this->responseHelper = $responseHelper;
     }
 
     public function createDomain(array $data)
     {
         try {
-            // IP-Adresse holen
-            $ipAddresses = $this->pleskClient->ip()->get();
-            if (empty($ipAddresses)) {
-                throw new \Exception('No IP address is available.');
-            }
-            $serverIp = $ipAddresses[0]->ipAddress;
+            $serverIp = $this->getFirstIp();
 
-            // Domain erstellen
+            // create Domain
             $webspace = $this->pleskClient->webspace();
             $response = $webspace->create(
                 [
@@ -40,66 +38,29 @@ class DomainService
                 true
             );
 
-            return response()->json(['message' => 'Domain successfully created', 'data' => $response], 201);
+            return $this->responseHelper->success('Domain successfully created', $response, 201);
         } catch (\Exception $e) {
-            Log::error('Domain creation failed: ' . $e->getMessage());
-
-            // Fehler-Mapping anwenden
+            // Attempt to map a Plesk error to a corresponding form field
             $mappedErrors = $this->mapPleskErrorToField($e->getMessage());
-
             if (!empty($mappedErrors)) {
-                // Rückgabe im Validation-Error-Format
-                return response()->json([
-                    'error' => 'Domain creation failed',
-                    'errors' => $mappedErrors,
-                ], 422);
+                return $this->responseHelper->validationError($mappedErrors, 'Domain creation failed');
             }
 
-            // Rückgabe des Originalfehlers, falls nicht gemappt
-            return response()->json([
-                'error' => 'Domain creation failed',
-                'plesk_error_id' => $e->getCode(),
-                'plesk_error_message' => $e->getMessage(),
-            ], 500);
+
+            return $this->responseHelper->pleskServerError('Domain creation failed', $e);
         }
     }
-
-    /**
-     * Mappe die Plesk-Fehlernachricht auf spezifische Eingabefelder.
-     */
-    private function mapPleskErrorToField(string $pleskErrorMessage): array
-    {
-        $mappedErrors = [];
-
-        if (stripos($pleskErrorMessage, 'password') !== false) {
-            $mappedErrors['password'] = $pleskErrorMessage;
-        }
-
-        if (stripos($pleskErrorMessage, 'domain name') !== false) {
-            $mappedErrors['domain'] = $pleskErrorMessage;
-        }
-
-        if (stripos($pleskErrorMessage, 'System user update is failed') !== false) {
-            $mappedErrors['ftp_user'] = $pleskErrorMessage;
-        }
-
-        return $mappedErrors;
-    }
-
-
 
     public function getDomains()
     {
         try {
             $domains = $this->pleskClient->webspace()->getAll();
-            return response()->json(['data' => $domains]);
+            return $this->responseHelper->success('', $domains);
         } catch (\Exception $e) {
-            Log::error('Error fetching domains: ' . $e->getMessage());
-            return response()->json([
-                'error' => 'Domain list failed',
-                'plesk_error_id' => $e->getCode(),
-                'plesk_error_message' => $e->getMessage(),
-            ], 500);
+            return $this->responseHelper->PleskServerError(
+                'Domain list failed',
+                $e
+            );
         }
     }
 
@@ -114,17 +75,56 @@ class DomainService
                 $response = $this->pleskClient->webspace()->disable('id', $domainId);
             }
 
-            return response()->json([
-                'message' => 'Status successfully updated',
-                'data' => $response,
-            ]);
+            return $this->responseHelper->success('Status successfully updated', $response);
         } catch (\Exception $e) {
-            Log::error('Error updating domain status: ' . $e->getMessage());
-            return response()->json([
-                'error' => 'Failed to update domain status',
-                'plesk_error_id' => $e->getCode(),
-                'plesk_error_message' => $e->getMessage(),
-            ], 500);
+            return $this->responseHelper->pleskServerError('Failed to update domain status', $e);
         }
+    }
+
+
+    /**
+     * Plesk errors will be displayed above the form.
+     * We try to map the error to a specific form field so it can be shown directly on the relevant field.
+     * Note: `plesk_error_id` is not unique.
+     * We do not compare the complete error string, as Plesk may change the error message format.
+     * It is better to have some false positives than no matches after an update.
+     * 
+     * example errors:
+     * {"error":"Domain creation failed","plesk_error_id":2204,"plesk_error_message":"System user setting was failed. Error: Your password is not complex enough. According to the server policy, the minimal password strength is Strong (recommended)."} -> password
+     * {"error":"Domain creation failed","plesk_error_id":1019,"plesk_error_message":"Domain name is invalid"} -> domain
+     * {"error":"Domain creation failed","plesk_error_id":1007,"plesk_error_message":"Incorrect name asdfsdafsafsaf.ch. This domain name already exists."} -> domain
+     * {"error":"Domain creation failed","plesk_error_id":2204,"plesk_error_message":"Unable to update hosting preferences. System user update is failed: The user andreashabegger.ch_6w4g6duu7l4 already exists. Incorrect fields: \"login\"."} -> ftp_user
+     * 
+     */
+    private function mapPleskErrorToField(string $pleskErrorMessage): array
+    {
+        $mappedErrors = [];
+
+        if (stripos($pleskErrorMessage, 'password') !== false) {
+            $mappedErrors['password'] = $pleskErrorMessage;
+        }
+
+        if (stripos($pleskErrorMessage, 'domain name') !== false) {
+            $mappedErrors['domain'] = $pleskErrorMessage;
+        }
+
+        if (stripos($pleskErrorMessage, 'user update') !== false) {
+            $mappedErrors['ftp_user'] = $pleskErrorMessage;
+        }
+
+        return $mappedErrors;
+    }
+
+    /**
+     * A dropdown should be implemented for the IP address selection when more than one IP is available.
+     * but for now, this is sufficient.
+     */
+    private function getFirstIp()
+    {
+        $ipAddresses = $this->pleskClient->ip()->get();
+        if (empty($ipAddresses)) {
+            throw new \Exception('No IP address is available.');
+        }
+        return $ipAddresses[0]->ipAddress;
     }
 }
