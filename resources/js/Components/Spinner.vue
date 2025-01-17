@@ -5,6 +5,31 @@
 </template>
 
 <script>
+/**
+ * A reusable loading spinner component with support for both global and inline modes.
+ *
+ * Usage:
+ * <Spinner :show="isLoading" />
+ * <Spinner :show="isLoading" :inline="true" />
+ *
+ * Props:
+ * - show (Boolean): Controls the visibility of the spinner. Default: false.
+ * - inline (Boolean): Determines whether the spinner is displayed inline (relative to its container)
+ *   or as a global overlay. Default: false.
+ *
+ * Features:
+ * - **Global Mode**: Displays a fullscreen overlay with a semi-transparent background and a centered spinner.
+ * - **Inline Mode**: Displays the spinner within its parent container without overlaying the entire screen.
+ * - Animated: Includes a smooth rotation animation for the spinner circle.
+ *
+ * Styling:
+ * - Global spinner has a dark semi-transparent background.
+ * - Inline spinner takes up the full width and height of its container.
+ *
+ * Accessibility:
+ * - The `show` prop allows for conditional rendering to improve performance.
+ */
+
 export default {
     props: {
         show: {

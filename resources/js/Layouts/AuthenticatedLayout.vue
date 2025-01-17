@@ -237,7 +237,6 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <ul class="mt-4 space-y-2">
-                            <!-- Swagger -->
                             <li>
                                 <NavLink href="/api/documentation">
                                     <span class="text-lg font-medium"
@@ -246,13 +245,23 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
                             </li>
 
-                            <!-- Externe Links -->
                             <li>
                                 <ExternalLink
                                     href="https://s2404.rootserver.io:8443"
                                 >
                                     <span class="text-lg font-medium"
                                         >Plesk</span
+                                    >
+                                </ExternalLink>
+                            </li>
+
+                            <li>
+                                <ExternalLink
+                                    href="https://github.com/And0r-/plesk-pannel-light"
+                                    tooltip="This repository is private. Please send me your GitHub username to request access."
+                                >
+                                    <span class="text-lg font-medium"
+                                        >GitHub</span
                                     >
                                 </ExternalLink>
                             </li>
