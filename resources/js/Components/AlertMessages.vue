@@ -11,7 +11,9 @@
             v-if="errorMessage"
             class="bg-red-100 text-red-800 p-3 rounded mb-4"
         >
-            <p><strong>Error:</strong> {{ errorMessage.error }}</p>
+            <p>
+                <strong>Error:</strong> {{ errorMessage.error || errorMessage }}
+            </p>
             <p v-if="errorMessage.plesk_error_id">
                 <strong>Plesk Error ID:</strong>
                 {{ errorMessage.plesk_error_id }}
