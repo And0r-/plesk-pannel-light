@@ -3,7 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use L5Swagger\Http\Controllers\SwaggerController;
+use Illuminate\Http\Request;
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
@@ -17,7 +18,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/domains', function () {
         return Inertia::render('DomainManager/Index');
     })->name('domains');
+
+
+    Route::get('/show-token', function (Request $request) {
+        $user = auth()->user();
+        $plainTextToken = $user->createToken('Api Token')->plainTextToken;
+
+        return Inertia::render('ShowToken', [
+            'token' => $plainTextToken,
+        ]);
+    })->name('show.token');
 });
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

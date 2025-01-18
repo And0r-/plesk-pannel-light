@@ -246,6 +246,17 @@ const showingNavigationDropdown = ref(false);
                             </li>
 
                             <li>
+                                <NavLink
+                                    :href="route('show.token')"
+                                    :active="route().current('show.token')"
+                                >
+                                    <span class="text-lg font-medium"
+                                        >Generate Token</span
+                                    >
+                                </NavLink>
+                            </li>
+
+                            <li>
                                 <ExternalLink
                                     href="https://s2404.rootserver.io:8443"
                                 >
