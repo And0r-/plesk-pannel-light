@@ -112,14 +112,17 @@
                                 ],
                                 "properties": {
                                     "domain": {
+                                        "description": "The domain name to be created. Must be a valid domain format.",
                                         "type": "string",
                                         "example": "example.com"
                                     },
                                     "ftp_user": {
+                                        "description": "FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed.",
                                         "type": "string",
                                         "example": "ftpuser"
                                     },
                                     "password": {
+                                        "description": "Password for the FTP and system user. Must be at least 8 characters long and pass complexity requirements (e.g., not commonly used passwords).",
                                         "type": "string",
                                         "example": "strongpassword123!"
                                     }
@@ -286,7 +289,7 @@
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "The selected status is invalid."
+                                            "example": "The status must be either active or disabled."
                                         },
                                         "errors": {
                                             "properties": {
@@ -294,7 +297,7 @@
                                                     "type": "array",
                                                     "items": {
                                                         "type": "string",
-                                                        "example": "The selected status is invalid."
+                                                        "example": "The status must be either active or disabled."
                                                     }
                                                 }
                                             },
