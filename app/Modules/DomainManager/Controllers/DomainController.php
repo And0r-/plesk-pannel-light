@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use ZxcvbnPhp\Zxcvbn;
 use App\Helpers\ResponseHelper;
+use App\Rules\ValidDomain;
 
 
 /**
@@ -89,7 +90,7 @@ class DomainController
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'domain' => ['required', 'string', 'regex:/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z]{2,}$/i'],
+            'domain' => ['required', 'string', new ValidDomain()],
             'ftp_user' => ['required', 'string', 'regex:/^[a-z0-9._-]+$/'],
             'password' => ['required', 'string', 'min:8'],
         ]);
