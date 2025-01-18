@@ -7,7 +7,7 @@
         </div>
         <div>
             <h2 class="text-xl font-bold mb-4">Existing Domains</h2>
-            <DomainList />
+            <DomainList ref="domainList" />
         </div>
     </div>
 </template>
