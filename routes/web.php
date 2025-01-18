@@ -17,8 +17,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/domains', function () {
         return Inertia::render('DomainManager/Index');
     })->name('domains');
-
-    Route::get('/api/documentation', [SwaggerController::class, 'api'])->name('swagger.api');
 });
 
 Route::middleware('auth')->group(function () {
