@@ -198,7 +198,7 @@ const showingNavigationDropdown = ref(false);
                             <span
                                 class="text-gray-400 uppercase text-sm font-bold tracking-wide"
                             >
-                                Administrativ
+                                Administrative
                             </span>
                         </div>
 
