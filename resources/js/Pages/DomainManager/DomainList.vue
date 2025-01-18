@@ -107,8 +107,8 @@ export default {
                 }
             } catch (error) {
                 this.errorMessage =
-                    error.response?.data?.error ||
-                    'An unexpected error occurred.';
+                    error.response?.data || 'An unexpected error occurred.';
+
                 this.successMessage = null;
             } finally {
                 domain.loading = false;
