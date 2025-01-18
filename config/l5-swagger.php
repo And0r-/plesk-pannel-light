@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+
 return [
     'default' => 'default',
     'documentations' => [
@@ -69,7 +71,10 @@ return [
              * Middleware allows to prevent unexpected access to API documentation
              */
             'middleware' => [
-                'api' => [],
+                'api' => [
+                    EnsureFrontendRequestsAreStateful::class,
+                    'auth:sanctum'
+                ],
                 'asset' => [],
                 'docs' => [],
                 'oauth2_callback' => [],
@@ -211,15 +216,16 @@ return [
                             "scopes" => []
                         ],
                     ],
-                ],
-                'sanctum' => [ // Unique name of security
-                    'type' => 'apiKey', // Valid values are "basic", "apiKey" or "oauth2".
-                    'description' => 'Enter token in format (Bearer <token>)',
-                    'name' => 'Authorization', // The name of the header or query parameter to be used.
-                    'in' => 'header', // The location of the API key. Valid values are "query" or "header".
-                ],
-                */],
+                ],*/
+                // 'sanctum' => [
+                //     'type' => 'apiKey',
+                //     'description' => env('SWAGGER_BEARER_TOKEN', ''),
+                //     'name' => 'Authorization',
+                //     'in' => 'header',
+                // ],
+            ],
             'security' => [
+                'sanctum' => [],
                 /*
                  * Examples of Securities
                  */
