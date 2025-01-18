@@ -12,14 +12,16 @@ RUN apt-get update && apt-get install -y \
     curl \
     net-tools \
     vim \
-    pkg-config
+    pkg-config \
+    libicu-dev
 
 # Use a specific Node.js version
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
