@@ -45,14 +45,12 @@ class DomainController
      *   description="This endpoint creates a new domain and automatically sets up an FTP and System user for file management and server access. The System user is linked to the domain's home directory and has both FTP and optional SSH access (if enabled). For more details, refer to the [Plesk API Documentation](https://docs.plesk.com).",
      *   @OA\RequestBody(
      *       required=true,
-     *       @OA\JsonContent(
-     *           @OA\JsonContent(
-     *               required={"domain", "ftp_user", "password"},
-     *               @OA\Property(property="domain", type="string", example="example.com", description="The domain name to be created. Must be a valid domain format."),
-     *               @OA\Property(property="ftp_user", type="string", example="ftpuser", description="FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed."),
-     *               @OA\Property(property="password", type="string", example="strongpassword123!", description="Password for the FTP and system user. Must be at least 8 characters long and pass complexity requirements (e.g., not commonly used passwords).")
-     *           )
-     *       )
+     *         @OA\JsonContent(
+     *             required={"domain", "ftp_user", "password"},
+     *             @OA\Property(property="domain", type="string", example="example.com", description="The domain name to be created. Must be a valid domain format."),
+     *             @OA\Property(property="ftp_user", type="string", example="ftpuser", description="FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed."),
+     *             @OA\Property(property="password", type="string", example="strongpassword123!", description="Password for the FTP and system user. Must be at least 8 characters long and pass complexity requirements (e.g., not commonly used passwords).")
+     *         )
      *   ),
      *   @OA\Response(
      *       response=201,
