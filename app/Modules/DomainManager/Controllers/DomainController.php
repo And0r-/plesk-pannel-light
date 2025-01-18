@@ -182,6 +182,13 @@ class DomainController
      *       )
      *   ),
      *   @OA\Response(
+     *       response=403,
+     *       description="Forbidden - Protected domain cannot be disabled",
+     *       @OA\JsonContent(
+     *           @OA\Property(property="error", type="string", example="The selected domain cannot be disabled as it is critical for system operation.")
+     *       )
+     *   ),
+     *   @OA\Response(
      *       response=422,
      *       description="Validation error",
      *       @OA\JsonContent(
@@ -206,8 +213,6 @@ class DomainController
      */
     public function updateStatus(Request $request, $domain_id)
     {
-        $protectedDomains = explode(',', env('PROTECTED_DOMAIN_IDS', ''));
-
         $data = $request->validate([
             'status' => 'required|string|in:active,disabled',
         ], [
@@ -215,7 +220,7 @@ class DomainController
         ]);
 
         // Protected domains specified in .env cannot be disabled
-        if (in_array($domain_id, $protectedDomains)) {
+        if (in_array($domain_id, config('app.protected_domain_ids'))) {
             return response()->json([
                 'error' => 'The selected domain cannot be disabled as it is critical for system operation.',
             ], 403);
