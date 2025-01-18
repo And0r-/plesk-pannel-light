@@ -6,7 +6,7 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 Route::middleware([
     EnsureFrontendRequestsAreStateful::class,
     'auth:sanctum',
-    'throttle:api',
+    'throttle:60,1',
 ])->group(function () {
     foreach (glob(base_path('app/Modules/*/Routes/v*')) as $versionPath) {
         $version = basename($versionPath); // z.B. 'v1', 'v2'
