@@ -28,7 +28,7 @@
                     >
                         <td class="border px-4 py-2">{{ domain.name }}</td>
                         <td class="border px-4 py-2">
-                            {{ domain.creationDate }}
+                            {{ formatDate(domain.creationDate) }}
                         </td>
                         <td class="border px-4 py-2">
                             <span
@@ -62,6 +62,7 @@
 import AlertMessages from '@/Components/AlertMessages.vue';
 import Spinner from '@/Components/Spinner.vue';
 import axios from 'axios';
+import { formatDate } from '@/utils/dateUtils';
 
 export default {
     components: { AlertMessages, Spinner },
@@ -74,6 +75,7 @@ export default {
         };
     },
     methods: {
+        formatDate,
         async fetchDomains() {
             this.loading = true;
             try {
