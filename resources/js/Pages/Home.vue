@@ -33,8 +33,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
                         <h3 class="text-lg font-medium">Project Overview</h3>
                         <ul class="list-disc list-inside text-gray-700">
                             <li>
-                                <strong>Technologies:</strong> Laravel, Sanctum,
-                                Vue, Inertia.js, Swagger, Tailwind CSS.
+                                <strong>Technologies:</strong> Laravel (with
+                                Breeze and Sanctum), Vue, Inertia.js, Swagger,
+                                Tailwind CSS.
+                            </li>
+                            <li>
+                                <strong>Authentication:</strong> Laravel Breeze
+                                was used to set up user authentication,
+                                including login, password reset, email
+                                verification, and profile management.
                             </li>
                             <li>
                                 <strong>Modularity:</strong> The project is
