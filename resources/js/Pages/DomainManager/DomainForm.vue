@@ -24,7 +24,7 @@
                         label="FTP User"
                         v-model="form.ftp_user"
                         :prefixRef="form.domain"
-                        :allowedPrefixCharacters="/[0-9a-z]/"
+                        :allowedPrefixCharacters="/[0-9a-z.\-_]/"
                         :randomSuffix="10"
                         :error="errors.ftp_user"
                         ref="ftpUserField"
