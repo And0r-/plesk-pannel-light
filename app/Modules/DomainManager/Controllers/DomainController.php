@@ -4,11 +4,9 @@ namespace App\Modules\DomainManager\Controllers;
 
 use App\Modules\DomainManager\Services\DomainService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use ZxcvbnPhp\Zxcvbn;
 use App\Helpers\ResponseHelper;
 use App\Rules\ValidDomain;
-
+use App\Rules\ValidPassword;
 
 /**
  * @OA\Tag(
@@ -50,7 +48,7 @@ class DomainController
      *             required={"domain", "ftp_user", "password"},
      *             @OA\Property(property="domain", type="string", example="example.com", description="The domain name to be created. Must be a valid domain format."),
      *             @OA\Property(property="ftp_user", type="string", example="ftpuser", description="FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed."),
-     *             @OA\Property(property="password", type="string", example="strongpassword123!", description="Password for the FTP and system user. Must be at least 8 characters long and pass complexity requirements (e.g., not commonly used passwords).")
+     *             @OA\Property(property="password", type="string", example="strongpassword123!", description="Password for the FTP and system user. The password must meet a complexity score of at least 3 as defined by the Zxcvbn library (e.g., not commonly used passwords and sufficient length and character variety).")
      *         )
      *   ),
      *   @OA\Response(
@@ -89,30 +87,12 @@ class DomainController
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $data = $request->validate([
             'domain' => ['required', 'string', new ValidDomain()],
             'ftp_user' => ['required', 'string', 'regex:/^[a-z0-9._-]+$/'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', new ValidPassword()],
         ]);
 
-        // Custom password validation using zxcvbn for complexity checking
-        if ($validator->passes()) {
-            $zxcvbn = new Zxcvbn();
-            $passwordStrength = $zxcvbn->passwordStrength($request->password);
-
-            if ($passwordStrength['score'] < 3) {
-                $this->responseHelper->validationError(
-                    [
-                        'password' => ['Password complexity is insufficient. Please choose a stronger password.']
-                    ],
-                    'The password is too weak.'
-                );
-            }
-        }
-
-        $validator->validate();
-
-        $data = $validator->validated();
         return $this->domainService->createDomain($data);
     }
 
