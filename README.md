@@ -1,66 +1,194 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Plesk Panel Light
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Plesk Panel Light is a lightweight, modular management tool designed to interact with the Plesk API. This project was developed as part of a job application task and serves as a foundation for building a more comprehensive Plesk management panel.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Task Fulfillment
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   **Create new domains** via the Plesk API.
+-   **List existing domains** with details:
+    -   Domain name
+    -   Creation date
+    -   Status.
 
-## Learning Laravel
+### Modular Design
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   The project is designed to allow future extensions and integration of additional features.
+-   Built with a focus on flexibility and reusability.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### RESTful API
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+-   All core functionalities are accessible via a RESTful API.
+-   The API is fully documented using Swagger, providing an interactive interface for testing and exploration.
 
-## Laravel Sponsors
+### Technology Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+-   **Backend**: Laravel with Sanctum for authentication.
+-   **Frontend**: Vue.js with Inertia.js for seamless single-page application behavior.
+-   **Styling**: Tailwind CSS for responsive and modern UI design.
+-   **API Documentation**: Swagger for interactive API exploration.
+-   **Containerization**: Docker and Docker Compose for a consistent development environment.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Challenges and Solutions
 
-## Contributing
+### Transaction-Safe Domain Creation
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The Plesk API processes domain creation and user creation in separate steps. If user data is invalid, the domain remains, leading to inconsistencies.
 
-## Code of Conduct
+**Solution**:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+-   The `webspace->create` method was extended to include an optional transaction-safe mode.
+-   If user creation fails, the domain is automatically deleted to maintain consistency.
 
-## Security Vulnerabilities
+### Domain Status Changes
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Plesk handles status changes differently depending on whether they are made via the API or directly in the GUI.
 
-## License
+**Solution**:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   A status switch was implemented to ensure consistent handling of status changes through the API.
+-   The system is designed to manage status exclusively via Plesk Panel Light.
+
+---
+
+## Vision: Extendability Through Plugins
+
+A long-term vision for Plesk Panel Light includes converting modules, tests, and frontend components into standalone plugins. These plugins could:
+
+-   Be installed, activated, or updated via an integrated store.
+-   Allow users to tailor the system to their specific needs.
+
+This approach ensures that the panel remains modular, easy to maintain, and extendable without impacting the core structure.
+
+---
+
+## Installation and Setup
+
+### Using Docker Compose
+
+1. **Clone the Repository**:
+
+    ```bash
+    git clone <repository-url>
+    cd plesk-panel-light
+    ```
+
+2. **Start the Development Environment**:
+
+    ```bash
+    docker-compose up -d
+    ```
+
+3. **Run Migrations**:
+
+    ```bash
+    docker-compose exec app php artisan migrate
+    ```
+
+4. **Start Frontend Development Server**:
+
+    ```bash
+    docker-compose exec app npm run dev --watch
+    ```
+
+5. **Create a User**:
+
+    - Open `http://localhost:8087/register` in your browser to create an initial user.
+    - For production environments, restrict access to `/register` via the reverse proxy.
+
+    > **Tip:** For the current version, applying basic authentication to `/register` is a pragmatic solution. In future versions, admin account creation will be possible through the `.env` file, making `/register` accessible only to logged-in users.
+
+The application will be accessible at `http://localhost:8087`.
+
+### Manual Installation
+
+1. **Clone the Repository**:
+
+    ```bash
+    git clone <repository-url>
+    cd plesk-panel-light
+    ```
+
+2. **Install Dependencies**:
+
+    ```bash
+    composer install
+    npm install
+    ```
+
+3. **Set Up Environment**:
+
+    - Copy `.env.example` to `.env`:
+        ```bash
+        cp .env.example .env
+        ```
+    - Update the `.env` file with your database and Plesk API credentials.
+
+4. **Run Migrations**:
+
+    ```bash
+    php artisan migrate
+    ```
+
+5. **Start Development Servers**:
+
+    - Backend: Run Laravel's server:
+        ```bash
+        php artisan serve
+        ```
+    - Frontend: Compile and watch assets:
+        ```bash
+        npm run dev
+        ```
+
+6. **Create a User**:
+
+    - Open `http://localhost:8000/register` in your browser to create an initial user.
+    - Restrict access to `/register` via the reverse proxy in production environments.
+
+    > **Tip:** For now, applying basic authentication to `/register` is a pragmatic solution. Future versions will allow admin account creation through the `.env` file.
+
+---
+
+## Usage
+
+### Access the Dashboard
+
+Once the application is running, navigate to `http://localhost:8087` (if using Docker Compose) or `http://localhost:8000` (manual setup) to access the dashboard.
+
+### API Documentation
+
+Visit `http://localhost:8087/api/documentation` (Docker Compose) or `http://localhost:8000/api/documentation` (manual setup) to view the Swagger UI and explore the available API endpoints.
+
+---
+
+## Deploy to Production with Plesk
+
+After deploying the latest version of the application using the integrated Git deployment in Plesk, perform the following steps to optimize and prepare the application for production:
+
+1. **In the Composer Interface**:
+
+    - Run: `install --optimize-autoloader --no-dev`
+
+2. **In the PHP Artisan Interface**:
+
+    - Run the following commands:
+        - `config:cache`
+        - `route:cache`
+        - `view:cache`
+        - `optimize`
+        - `migrate --force`
+
+3. **In the Node.js NPM Interface**:
+
+    - Run: `run-scripts build`
+
+4. **In the PHP Interface**:
+    - Ensure your PHP settings and extensions are configured for production, including appropriate memory limits and error logging.
+
+---

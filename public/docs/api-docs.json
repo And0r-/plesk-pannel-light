@@ -1,0 +1,362 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Plesk Panel Light API",
+        "description": "API documentation for managing Plesk domains and users. For detailed information, refer to the [Plesk API Documentation](https://docs.plesk.com).",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "Plesk Panel Light API v1"
+        }
+    ],
+    "paths": {
+        "/domains": {
+            "get": {
+                "tags": [
+                    "Domains - v1"
+                ],
+                "summary": "List all domains",
+                "description": "This endpoint retrieves all domains managed by the Plesk server. For more details, refer to the [Plesk API Documentation](https://docs.plesk.com).",
+                "operationId": "66cc08b81e30bbf28731a87152bd0a7d",
+                "responses": {
+                    "200": {
+                        "description": "List of domains",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "creationDate": {
+                                                        "type": "string",
+                                                        "example": "2025-01-09T12:34:56Z"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "example.com"
+                                                    },
+                                                    "asciiName": {
+                                                        "type": "string",
+                                                        "example": "example.com"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "0"
+                                                    },
+                                                    "ipAddresses": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "enabled": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to retrieve domains."
+                                        },
+                                        "error_id": {
+                                            "type": "string",
+                                            "example": "PLESK_API_ERROR"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Domains - v1"
+                ],
+                "summary": "Create a new domain with an FTP and System user",
+                "description": "This endpoint creates a new domain and automatically sets up an FTP and System user for file management and server access. The System user is linked to the domain's home directory and has both FTP and optional SSH access (if enabled). For more details, refer to the [Plesk API Documentation](https://docs.plesk.com).",
+                "operationId": "11480fa0599fc875a3d144615d6dc0b9",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "domain",
+                                    "ftp_user",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "domain": {
+                                        "description": "The domain name to be created. Must be a valid domain format.",
+                                        "type": "string",
+                                        "example": "example.com"
+                                    },
+                                    "ftp_user": {
+                                        "description": "FTP username for the domain. Only lowercase letters, numbers, '.', '_' and '-' are allowed.",
+                                        "type": "string",
+                                        "example": "ftpuser"
+                                    },
+                                    "password": {
+                                        "description": "Password for the FTP and system user. The password must meet a complexity score of at least 3 as defined by the Zxcvbn library (e.g., not commonly used passwords and sufficient length and character variety).",
+                                        "type": "string",
+                                        "example": "strongpassword123!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Domain successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Domain successfully created"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 23
+                                                },
+                                                "guid": {
+                                                    "type": "string",
+                                                    "example": "9259dd1e-3f54-46c7-87cd-1df5e7d1e63c"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "example.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The domain field is required."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "domain": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The domain field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to create domain."
+                                        },
+                                        "error_id": {
+                                            "type": "string",
+                                            "example": "PLESK_API_ERROR"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/domains/{domain_id}/status": {
+            "post": {
+                "tags": [
+                    "Domains - v1"
+                ],
+                "summary": "Update the status of a domain",
+                "description": "This endpoint updates the status of a domain (active or disabled) in the Plesk system. The status is set using the Plesk API.",
+                "operationId": "045a23e9e13c6c2c61c1b487b941c438",
+                "parameters": [
+                    {
+                        "name": "domain_id",
+                        "in": "path",
+                        "description": "The ID of the domain to be updated.",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 33
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "disabled"
+                                        ],
+                                        "example": "disabled"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Status successfully updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status successfully updated"
+                                        },
+                                        "data": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Protected domain cannot be disabled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The selected domain cannot be disabled as it is critical for system operation."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The status must be either active or disabled."
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The status must be either active or disabled."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to update domain status"
+                                        },
+                                        "plesk_error_id": {
+                                            "type": "integer",
+                                            "example": 1013
+                                        },
+                                        "plesk_error_message": {
+                                            "type": "string",
+                                            "example": "Webspace does not exist"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Domains - v1",
+            "description": "Endpoints for managing domains and users."
+        }
+    ]
+}
