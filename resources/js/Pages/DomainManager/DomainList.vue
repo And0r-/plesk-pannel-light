@@ -62,7 +62,7 @@
 import AlertMessages from '@/Components/AlertMessages.vue';
 import Spinner from '@/Components/Spinner.vue';
 import axios from 'axios';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate } from '@/Utils/dateUtils';
 
 export default {
     components: { AlertMessages, Spinner },
