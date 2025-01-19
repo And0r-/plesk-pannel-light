@@ -74,7 +74,7 @@ export default {
         prefixRef: String,
         randomSuffix: Number,
         error: String,
-        allowedCharacters: {
+        allowedPrefixCharacters: {
             type: RegExp,
             default: () => /^[a-zA-Z0-9_-]*$/,
         },
@@ -101,7 +101,9 @@ export default {
     methods: {
         setDefaultValue() {
             const prefix = this.prefixRef
-                ? this.filterAllowedCharacters(this.prefixRef.toLowerCase())
+                ? this.filterAllowedPrefixCharacters(
+                      this.prefixRef.toLowerCase()
+                  )
                 : '';
             const suffix = this.randomSuffix ? this.generateRandomSuffix() : '';
             this.localValue = prefix ? `${prefix}_${suffix}` : '';
@@ -121,10 +123,10 @@ export default {
             this.manuallyModified = false;
             this.setDefaultValue();
         },
-        filterAllowedCharacters(input) {
+        filterAllowedPrefixCharacters(input) {
             return input
                 .split('')
-                .filter((char) => this.allowedCharacters.test(char))
+                .filter((char) => this.allowedPrefixCharacters.test(char))
                 .join('');
         },
     },
