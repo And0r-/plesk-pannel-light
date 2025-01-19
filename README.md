@@ -167,15 +167,28 @@ Visit `http://localhost:8087/api/documentation` (Docker Compose) or `http://loca
 
 ---
 
-## Differences Between `php artisan serve` and `npm run dev`
+## Deploy to Production with Plesk
 
--   **`php artisan serve`**:
+After deploying the latest version of the application using the integrated Git deployment in Plesk, perform the following steps to optimize and prepare the application for production:
 
-    -   Starts Laravel's development server, providing API and backend functionality.
-    -   Accessible at `http://localhost:8000`.
+1. **In the Composer Interface**:
 
--   **`npm run dev`**:
-    -   Compiles frontend assets using Vite and watches for changes.
-    -   Enables hot module reloading for Vue components.
+    - Run: `install --optimize-autoloader --no-dev`
+
+2. **In the PHP Artisan Interface**:
+
+    - Run the following commands:
+        - `config:cache`
+        - `route:cache`
+        - `view:cache`
+        - `optimize`
+        - `migrate --force`
+
+3. **In the Node.js NPM Interface**:
+
+    - Run: `run-scripts build`
+
+4. **In the PHP Interface**:
+    - Ensure your PHP settings and extensions are configured for production, including appropriate memory limits and error logging.
 
 ---
