@@ -38,6 +38,7 @@
  *     :error="exampleError"
  *     :prefixRef="referenceValue"
  *     :randomSuffix="8"
+ *     :allowedPrefixCharacters="/[a-zA-Z0-9]/"
  * >
  *     <template #actionIcons>
  *         <button @click="doSomething">🔄</button>
@@ -52,6 +53,8 @@
  * - placeholder (String): Placeholder text for the input.
  * - prefixRef (String): A dynamic prefix for the input value.
  * - randomSuffix (Number): Length of a randomly generated suffix appended to the prefix.
+ * - allowedPrefixCharacters (RegExp): A regular expression defining the allowed characters for the prefix.
+ *   Default: /^[a-zA-Z0-9_-]*$/ (allows alphanumeric characters, dashes, and underscores).
  * - error (String): Error message displayed below the input.
  *
  * Slots:
@@ -60,6 +63,7 @@
  * Methods:
  * - reset(): Resets the input to its default value (based on prefixRef and randomSuffix).
  */
+
 export default {
     props: {
         id: String,
@@ -70,6 +74,10 @@ export default {
         prefixRef: String,
         randomSuffix: Number,
         error: String,
+        allowedCharacters: {
+            type: RegExp,
+            default: () => /^[a-zA-Z0-9_-]*$/,
+        },
     },
     data() {
         return {
@@ -92,7 +100,9 @@ export default {
     },
     methods: {
         setDefaultValue() {
-            const prefix = this.prefixRef ? this.prefixRef.toLowerCase() : '';
+            const prefix = this.prefixRef
+                ? this.filterAllowedCharacters(this.prefixRef.toLowerCase())
+                : '';
             const suffix = this.randomSuffix ? this.generateRandomSuffix() : '';
             this.localValue = prefix ? `${prefix}_${suffix}` : '';
         },
@@ -110,6 +120,12 @@ export default {
         reset() {
             this.manuallyModified = false;
             this.setDefaultValue();
+        },
+        filterAllowedCharacters(input) {
+            return input
+                .split('')
+                .filter((char) => this.allowedCharacters.test(char))
+                .join('');
         },
     },
     mounted() {
